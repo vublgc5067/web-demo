@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kỷ Niệm Thanh Xuân 12A1 | Niên Khóa 2023 - 2026</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rosewood: '#e11d48',
+            warmpaper: '#faf7f2',
+            sunset: '#f97316'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-warmpaper min-h-screen text-slate-800 relative selection:bg-rose-200 selection:text-rose-900">
+
+  <!-- Canvas hoa anh đào rơi -->
+  <canvas id="sakura-canvas"></canvas>
+
+  <!-- Audio Player ẩn điều khiển qua JS -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-rose-100 shadow-sm transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-2 group">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white shadow-md shadow-rose-200 group-hover:scale-105 transition-transform">
+          <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight text-slate-900 group-hover:text-rose-600 transition-colors">12A1</span>
+          <span class="text-xs font-semibold px-2 py-0.5 ml-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200">2023 - 2026</span>
+          <p class="text-[11px] text-slate-500 hidden sm:block">Kỷ Niệm Mái Trường Dấu Yêu</p>
+        </div>
+      </a>
+
+      <!-- Navigation links (Desktop) -->
+      <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
+        <a href="#home" class="hover:text-rose-600 transition-colors">Trang chủ</a>
+        <a href="#teacher" class="hover:text-rose-600 transition-colors">Cô Chủ Nhiệm</a>
+        <a href="#members" class="hover:text-rose-600 transition-colors">Thành Viên & Sơ Đồ</a>
+        <a href="#timeline" class="hover:text-rose-600 transition-colors">Dòng Thời Gian</a>
+        <a href="#gallery" class="hover:text-rose-600 transition-colors">Kho Ảnh</a>
+        <a href="#videos" class="hover:text-rose-600 transition-colors flex items-center gap-1">
+          <i data-lucide="film" class="w-3.5 h-3.5 text-rose-500"></i>
+          <span>Video</span>
+        </a>
+        <a href="#guestbook" class="hover:text-rose-600 transition-colors">Lưu Bút</a>
+        <a href="#pkd" class="text-rose-600 hover:text-rose-700 font-bold transition-colors flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200 shadow-2xs">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>PKD</span>
+        </a>
+        <a href="#time-capsule" class="hover:text-rose-600 transition-colors">Hộp Thời Gian</a>
+      </nav>
+
+      <!-- Music & Tools Header Widget -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Nút Đăng Nhập / Quản Trị -->
+        <button id="auth-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all">
+          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          <span id="auth-btn-label">Tài Khoản</span>
+        </button>
+
+        <!-- Bật / Tắt Nhạc Nền -->
+        <button id="music-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-medium transition-all shadow-sm">
+          <div id="sound-wave-bars" class="sound-wave paused">
+            <span class="sound-bar"></span>
+            <span class="sound-bar"></span>
+            <span class="sound-bar"></span>
+            <span class="sound-bar"></span>
+            <span class="sound-bar"></span>
+          </div>
+          <span id="music-btn-text">Bật Nhạc</span>
+        </button>
+
+        <!-- Bắn pháo hoa ăn mừng -->
+        <button id="confetti-btn" title="Bắn pháo hoa giấy!" class="w-9 h-9 rounded-full bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 flex items-center justify-center transition-all hover:rotate-12 shadow-sm">
+          <i data-lucide="party-popper" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Nút bật/tắt cánh hoa rơi -->
+        <button id="sakura-toggle-btn" title="Bật/Tắt hiệu ứng hoa rơi" class="w-9 h-9 rounded-full bg-pink-50 border border-pink-200 hover:bg-pink-100 text-pink-700 flex items-center justify-center transition-all shadow-sm">
+          <i data-lucide="flower" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Dropdown Nav -->
+    <div id="mobile-nav" class="hidden md:hidden px-4 pt-2 pb-4 bg-white border-b border-slate-100 flex-col gap-2 text-sm font-medium">
+      <a href="#home" class="py-2 text-slate-700 hover:text-rose-600">Trang chủ</a>
+      <a href="#teacher" class="py-2 text-slate-700 hover:text-rose-600">Cô Chủ Nhiệm</a>
+      <a href="#members" class="py-2 text-slate-700 hover:text-rose-600">Thành Viên & Sơ Đồ</a>
+      <a href="#timeline" class="py-2 text-slate-700 hover:text-rose-600">Dòng Thời Gian</a>
+      <a href="#gallery" class="py-2 text-slate-700 hover:text-rose-600">Kho Ảnh Kỷ Yếu</a>
+      <a href="#videos" class="py-2 text-slate-700 hover:text-rose-600 flex items-center gap-1.5">
+        <i data-lucide="film" class="w-4 h-4 text-rose-500"></i>
+        <span>Video Kỷ Niệm</span>
+      </a>
+      <a href="#guestbook" class="py-2 text-slate-700 hover:text-rose-600">Lưu Bút Lớp</a>
+      <a href="#pkd" class="py-2 text-rose-600 font-bold hover:text-rose-700 flex items-center gap-1.5">
+        <i data-lucide="lock" class="w-4 h-4"></i>
+        <span>Góc Bí Mật PKD</span>
+      </a>
+      <a href="#time-capsule" class="py-2 text-slate-700 hover:text-rose-600">Hộp Thời Gian</a>
+    </div>
+  </header>
+
+  <!-- ================= BANNER QUẢN TRỊ VIÊN / GUEST ================= -->
+  <div id="admin-banner" class="hidden bg-gradient-to-r from-slate-900 via-rose-900 to-indigo-950 text-white text-xs py-2.5 px-4 shadow-lg sticky top-0 md:top-18 z-40 border-b border-rose-500/30">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span id="admin-banner-badge" class="px-2.5 py-0.5 rounded-full bg-rose-500 text-white font-extrabold uppercase text-[10px] tracking-wider shadow-sm">ADMIN</span>
+        <span id="admin-banner-text" class="font-medium text-slate-200">Đang đăng nhập: Lý Gia Hiếu - Chế độ sửa nội dung toàn trang đã kích hoạt!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="admin-reset-btn" class="hidden px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors text-[11px] font-medium items-center gap-1">
+          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+          <span>Khôi Phục Mặc Định</span>
+        </button>
+        <button id="logout-btn" class="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all text-xs flex items-center gap-1 shadow-sm">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Đăng Xuất</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+    <!-- Nền trang trí hình học mờ ảo -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-rose-200/40 via-amber-100/40 to-sky-100/40 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <!-- Badge Niên Khóa -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100/80 border border-rose-200 text-rose-800 text-xs md:text-sm font-semibold mb-6 shadow-sm animate-pulse">
+        <i data-lucide="sparkles" class="w-4 h-4 text-rose-600"></i>
+        <span id="hero-academic-years">Kỷ Yếu Điện Tử • Niên Khóa 2023 - 2026</span>
+      </div>
+
+      <!-- Nút Chỉnh sửa thông tin chung (Admin Only) -->
+      <div class="admin-only hidden mb-4">
+        <button id="edit-general-btn" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-400/40 text-xs font-bold transition-all shadow-md inline-flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+          <span>Sửa Thông Tin Chung Lớp & Lời Tựa (Admin)</span>
+        </button>
+      </div>
+
+      <!-- Main Heading -->
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+        <span id="hero-title-prefix">Hành Trình Thanh Xuân</span> <br>
+        <span id="hero-class-name" class="text-gradient-rose">Tập Thể 12A1</span>
+      </h1>
+
+      <!-- Slogan / Subtitle -->
+      <p id="hero-slogan" class="max-w-2xl mx-auto text-lg sm:text-xl text-slate-600 mb-8 font-serif-quote italic">
+        "Dù mai này chúng mình cách xa vạn dặm, gặp lại nhau nụ cười vẫn vẹn nguyên như những ngày 18 tuổi."
+      </p>
+
+      <!-- Emotional Quote Box (dạng sổ tay học trò) -->
+      <div class="max-w-xl mx-auto mb-10 p-6 rounded-2xl bg-white/90 border border-amber-200/80 shadow-lg relative bg-notebook">
+        <div class="washi-tape washi-tape-pink"></div>
+        <p id="hero-quote" class="font-handwriting text-2xl md:text-3xl text-slate-700 leading-relaxed text-center">
+          "Cảm ơn vì đã cùng nhau đi qua những năm tháng rực rỡ nhất của tuổi thanh xuân!"
+        </p>
+        <div class="mt-3 text-right">
+          <span id="hero-school-name" class="text-xs uppercase font-bold tracking-wider text-rose-500 font-sans">— Mãi là 12A1-er ❤️</span>
+        </div>
+      </div>
+
+      <!-- Live Counters & Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
+        <div class="p-4 rounded-xl bg-white border border-rose-100 shadow-sm">
+          <div id="stat-total-students" class="text-3xl font-extrabold text-rose-600">40</div>
+          <div class="text-xs font-medium text-slate-500 mt-1">Thành viên gắn bó</div>
+        </div>
+        <div class="p-4 rounded-xl bg-white border border-amber-100 shadow-sm">
+          <div id="stat-total-memories" class="text-3xl font-extrabold text-amber-600">1000+</div>
+          <div class="text-xs font-medium text-slate-500 mt-1">Kỷ niệm đáng nhớ</div>
+        </div>
+        <div class="p-4 rounded-xl bg-white border border-blue-100 shadow-sm">
+          <div id="stat-total-years" class="text-3xl font-extrabold text-blue-600">3 Năm</div>
+          <div class="text-xs font-medium text-slate-500 mt-1">Chung một mái nhà</div>
+        </div>
+        <div class="p-4 rounded-xl bg-white border border-emerald-100 shadow-sm">
+          <div id="days-counter" class="text-3xl font-extrabold text-emerald-600">...</div>
+          <div class="text-xs font-medium text-slate-500 mt-1">Ngày bên nhau</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="#guestbook" class="px-6 py-3.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm shadow-md shadow-rose-300 hover:shadow-lg transition-all flex items-center gap-2">
+          <i data-lucide="pen-tool" class="w-4 h-4"></i>
+          <span>Viết Lưu Bút 12A1</span>
+        </a>
+        <a href="#gallery" class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm border border-slate-200 shadow-sm hover:shadow transition-all flex items-center gap-2">
+          <i data-lucide="image" class="w-4 h-4 text-slate-500"></i>
+          <span>Xem Kho Ảnh Kỷ Yếu</span>
+        </a>
+        <a href="#videos" class="px-6 py-3.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 font-semibold text-sm border border-rose-200 shadow-sm transition-all flex items-center gap-2">
+          <i data-lucide="film" class="w-4 h-4 text-rose-600"></i>
+          <span>Xem Video Kỷ Niệm</span>
+        </a>
+        <a href="#members" class="px-6 py-3.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 font-semibold text-sm border border-amber-200 shadow-sm transition-all flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+          <span>Thành Viên & Sơ Đồ Lớp</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= GÓC GIÁO VIÊN CHỦ NHIỆM ================= -->
+  <section id="teacher" class="py-16 bg-white/70 border-y border-rose-100/60 relative">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">Người Lái Đò Tận Tụy</span>
+        <h2 class="text-3xl font-bold text-slate-900 mt-2">Lời Dặn Dò Của Cô Chủ Nhiệm</h2>
+      </div>
+
+      <!-- Nút Chỉnh sửa Cô Chủ Nhiệm (Admin Only) -->
+      <div class="admin-only hidden text-center mb-6">
+        <button id="edit-teacher-btn" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-400/40 text-xs font-bold transition-all shadow-md inline-flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+          <span>Sửa Lời Dặn & Thông Tin Cô Chủ Nhiệm (Admin)</span>
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-rose-50/50 to-amber-50/30 rounded-3xl p-6 sm:p-10 border border-rose-200/80 shadow-md flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+        
+        <!-- Ảnh Cô Chủ Nhiệm kiểu Polaroid -->
+        <div class="w-full md:w-1/3 flex flex-col items-center flex-shrink-0">
+          <div class="polaroid-card w-64 max-w-full">
+            <div class="washi-tape washi-tape-pink"></div>
+            <img id="teacher-avatar" src="" alt="Cô Chủ Nhiệm" class="w-full h-72 object-cover rounded shadow-inner">
+            <div class="mt-4 text-center">
+              <h3 id="teacher-name" class="font-bold text-lg text-slate-800">Cô Nguyễn Thu Hà</h3>
+              <p id="teacher-title" class="text-xs text-rose-600 font-medium">GVCN 12A1 • Môn Ngữ Văn</p>
+              <div id="teacher-nickname" class="mt-2 inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-semibold">
+                Mẹ hiền 12A1 ❤️
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nội dung bức tâm thư -->
+        <div class="w-full md:w-2/3 flex flex-col justify-center">
+          <div class="flex items-center gap-2 text-rose-500 mb-3">
+            <i data-lucide="quote" class="w-8 h-8 opacity-40"></i>
+          </div>
+          <p id="teacher-message" class="text-slate-700 leading-relaxed text-base sm:text-lg mb-6 italic font-serif-quote">
+            Đang tải lời dặn dò...
+          </p>
+          <div class="p-4 rounded-xl bg-white border border-rose-100 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Thông điệp gửi gắm</p>
+              <p id="teacher-quote" class="text-sm font-bold text-rose-700 mt-0.5">"Các em hãy sống rực rỡ như những đoá hoa mùa hạ!"</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600">
+              <i data-lucide="heart" class="w-5 h-5 fill-rose-500 text-rose-500"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= THÀNH VIÊN & SƠ ĐỒ LỚP ================= -->
+  <section id="members" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">Gia Đình 12A1</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Gương Mặt Thành Viên & Sơ Đồ Lớp</h2>
+        <p class="text-slate-600 mt-2 text-sm sm:text-base">Mỗi người một cá tính, cùng nhau tạo nên bức tranh 12A1 độc nhất vô nhị.</p>
+      </div>
+
+      <!-- Controls: Switch View (Danh sách thẻ / Sơ đồ bàn học) + Filter + Search + Admin Action -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col lg:flex-row items-center justify-between gap-4">
+        
+        <!-- View Toggle (Thẻ / Sơ đồ lớp) -->
+        <div class="flex items-center p-1 bg-slate-100 rounded-xl w-full lg:w-auto">
+          <button id="view-cards-btn" class="flex-1 lg:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-white text-rose-600 shadow-sm flex items-center justify-center gap-2">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            <span>Thẻ Polaroid Thành Viên</span>
+          </button>
+          <button id="view-map-btn" class="flex-1 lg:flex-none px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2">
+            <i data-lucide="grid-3x3" class="w-4 h-4"></i>
+            <span>Sơ Đồ Bàn Học</span>
+          </button>
+        </div>
+
+        <!-- Filter Tổ (Chỉ hiện khi ở view Thẻ) -->
+        <div id="group-filters" class="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0">
+          <button data-group="all" class="group-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-rose-600 text-white shadow-sm transition-all whitespace-nowrap">Tất cả</button>
+          <button data-group="Tổ 1" class="group-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap">Tổ 1</button>
+          <button data-group="Tổ 2" class="group-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap">Tổ 2</button>
+          <button data-group="Tổ 3" class="group-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap">Tổ 3</button>
+          <button data-group="Tổ 4" class="group-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap">Tổ 4</button>
+        </div>
+
+        <div class="flex items-center gap-3 w-full lg:w-auto">
+          <!-- Ô tìm kiếm thành viên -->
+          <div class="relative flex-grow lg:w-64">
+            <input type="text" id="member-search" placeholder="Tìm tên, biệt danh, danh hiệu..." class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+
+          <!-- Nút Thêm Thành Viên (Admin Only) -->
+          <div class="admin-only hidden flex-shrink-0">
+            <button id="add-member-btn" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow transition-all flex items-center gap-1.5 whitespace-nowrap">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>+ Thêm Bạn Mới</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 1: Grid Thẻ Polaroid Thành Viên -->
+      <div id="members-card-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <!-- Rendered via JavaScript -->
+      </div>
+
+      <!-- VIEW 2: Sơ đồ bàn học hoài niệm (Hỗ trợ Admin tự thêm hàng, ô, tên) -->
+      <div id="classroom-map-view" class="hidden">
+        <div class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-lg max-w-4xl mx-auto">
+          
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-slate-800">Sơ Đồ Phòng Học Lớp 12A1 (Tầng 3)</h3>
+            <p class="text-xs text-slate-500 mt-1">Bấm vào từng bàn học để xem chi tiết hoặc chỉnh sửa (với quyền Admin)!</p>
+          </div>
+
+          <!-- Thanh điều khiển Sơ đồ lớp dành riêng cho Admin -->
+          <div class="admin-only hidden mb-6 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-amber-600"></i>
+              <span class="text-xs font-bold text-amber-900">Chế độ Quản trị Sơ đồ Lớp: Bạn có thể tự thêm hàng, thêm ô bàn học và đổi tên học sinh!</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="add-row-btn" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>+ Thêm Hàng Mới</span>
+              </button>
+              <button id="reset-seating-btn" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium transition-all" title="Khôi phục sơ đồ gốc">
+                <span>🔄 Mặc Định</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bục giảng & Bàn giáo viên -->
+          <div class="w-full bg-slate-100 border-2 border-dashed border-slate-300 rounded-xl p-4 text-center mb-8 relative">
+            <div class="inline-block px-4 py-1.5 rounded-lg bg-rose-600 text-white font-bold text-xs tracking-wider shadow-sm uppercase">
+              BỤC GIẢNG & BẢNG ĐEN
+            </div>
+            <div class="mt-3 flex items-center justify-center gap-3">
+              <span class="text-xs font-semibold text-slate-600 bg-white px-3 py-1 rounded border border-slate-200 shadow-2xs">Bàn Giáo Viên: Cô Nguyễn Thu Hà ❤️</span>
+              <span class="text-xs font-semibold text-slate-500 bg-white px-3 py-1 rounded border border-slate-200">Cửa Ra Vào 🚪</span>
+            </div>
+          </div>
+
+          <!-- Dãy Bàn Học Sinh (Render động từ mảng seatingPlan) -->
+          <div id="classroom-seats-grid" class="space-y-4">
+            <!-- Rendered via JS -->
+          </div>
+
+          <div class="mt-8 text-center text-xs text-slate-400 italic">
+            * Cửa sổ ngắm nhìn sân trường ngập nắng ở phía bên phải lớp học 🍃
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= DÒNG THỜI GIAN 3 NĂM ================= -->
+  <section id="timeline" class="py-20 bg-white/70 border-y border-rose-100/60 relative">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">Ký Ức Thanh Xuân</span>
+        <h2 id="timeline-sec-title" class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Dòng Thời Gian Chúng Mình Cùng Đi Qua</h2>
+        <p id="timeline-sec-desc" class="text-slate-600 mt-2 text-sm sm:text-base">Mỗi cột mốc là một mảnh ghép không thể thiếu của tuổi 18.</p>
+
+        <!-- Nút Thêm Mốc Kỷ Niệm Mới (Admin Only) -->
+        <div class="admin-only hidden mt-4">
+          <button id="add-timeline-btn" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow transition-all inline-flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>+ Thêm Mốc Kỷ Niệm Mới (Admin)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Container -->
+      <div id="timeline-container" class="relative">
+        <!-- Đường kẻ dọc chính giữa -->
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-rose-300 via-amber-300 to-rose-400 -translate-x-1/2"></div>
+        
+        <!-- Rendered via JavaScript -->
+        <div id="timeline-list" class="space-y-12"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= KHO ẢNH KỶ YẾU ================= -->
+  <section id="gallery" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">Kho Báu Hình Ảnh</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Bộ Sưu Tập Kỷ Yếu 12A1</h2>
+          <p class="text-slate-600 mt-2 text-sm">Nơi lưu giữ từng nụ cười, góc sân trường và cả những khoảnh khắc dìm không hồi kết.</p>
+        </div>
+
+        <!-- Nút Tải ảnh lên cục bộ & Quản lý ảnh -->
+        <div class="flex items-center gap-3">
+          <button id="manage-photo-btn" class="photo-editor-only hidden px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>+ Thêm Ảnh Mới (Admin/Guest)</span>
+          </button>
+          <label for="custom-photo-upload" class="cursor-pointer px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-rose-600 hover:border-rose-300 text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            <span>Tải Ảnh Từ Máy</span>
+            <input type="file" id="custom-photo-upload" accept="image/*" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Filter Danh Mục Ảnh -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8">
+        <button data-cat="all" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-rose-600 text-white shadow-sm transition-all whitespace-nowrap">Tất cả ảnh</button>
+        <button data-cat="yearbook" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all whitespace-nowrap">Ảnh Kỷ Yếu</button>
+        <button data-cat="candid" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all whitespace-nowrap">Giờ Ra Chơi & Đời Thường</button>
+        <button data-cat="events" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all whitespace-nowrap">Hội Trại & Văn Nghệ</button>
+        <button data-cat="fun" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all whitespace-nowrap">Ảnh Dìm Huyền Thoại 😂</button>
+      </div>
+
+      <!-- Photo Grid -->
+      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Rendered via JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= MỤC VIDEO KỶ NIỆM 12A1 ================= -->
+  <section id="videos" class="py-20 bg-slate-900 text-white relative border-y border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-400 bg-rose-950/80 px-3 py-1 rounded-full border border-rose-800">
+            Thước Phim Thanh Xuân 🎬
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Video Kỷ Niệm 12A1</h2>
+          <p class="text-slate-400 mt-2 text-sm">Những thước phim sống động lưu giữ từng giọt nước mắt, nụ cười và khoảnh khắc bùng nổ thanh xuân.</p>
+        </div>
+
+        <!-- Nút Thêm Video Mới (Chỉ Admin) -->
+        <div class="admin-only hidden">
+          <button id="add-video-btn" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md transition-all flex items-center gap-2">
+            <i data-lucide="video" class="w-4 h-4"></i>
+            <span>+ Thêm Video Mới (Admin)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lưới Video Grid -->
+      <div id="videos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered via JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= BẢNG LƯU BÚT & LỜI NHẮN ================= -->
+  <section id="guestbook" class="py-20 bg-amber-50/40 border-y border-amber-200/60 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Góc Lưu Bút</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Bảng Ghi Nhớ & Lời Nhắn Gửi</h2>
+        <p class="text-slate-600 mt-2 text-sm sm:text-base">Gửi gắm lời yêu thương, lời xin lỗi muộn màng hay lời chúc thi đại học điểm cao cho bạn bè!</p>
+        
+        <div class="mt-6">
+          <button id="open-note-modal-btn" class="px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm shadow-md shadow-rose-300 transition-all inline-flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Dán Một Tờ Giấy Ghi Chú Mới</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Corkboard Grid of Sticky Notes -->
+      <div id="notes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+        <!-- Rendered via JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= MỤC LƯU TRỮ ĐẶC BIỆT: PKD (BẢO MẬT BẰNG MẬT KHẨU) ================= -->
+  <section id="pkd" class="py-20 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden border-y border-slate-700">
+    <!-- Hiệu ứng ánh sáng bảo mật mờ ảo -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- TRẠNG THÁI 1: KHÓA (CHƯA NHẬP MẬT KHẨU) -->
+      <div id="pkd-locked-view" class="max-w-md mx-auto text-center py-10">
+        
+        <div class="w-20 h-20 rounded-3xl bg-rose-500/10 border-2 border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-rose-950/40 relative group">
+          <i data-lucide="shield-alert" class="w-10 h-10 animate-bounce"></i>
+          <span class="absolute -top-2 -right-2 px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider">Khóa</span>
+        </div>
+
+        <span class="text-xs font-bold uppercase tracking-wider text-rose-400 bg-rose-950/60 px-3.5 py-1.5 rounded-full border border-rose-800/80">
+          Khu Vực Riêng Tư • Bảo Mật 🔒
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 tracking-tight">Góc Lưu Trữ PKD</h2>
+        <p class="text-slate-400 mt-2 text-sm leading-relaxed">
+          Nơi lưu giữ ảnh độc quyền và hồ sơ tiểu sử riêng của <strong>PKD</strong>. Vui lòng nhập mật khẩu để mở khóa.
+        </p>
+
+        <!-- Form nhập mật khẩu -->
+        <form id="pkd-lock-form" class="mt-8 space-y-4">
+          <div class="relative">
+            <input type="password" id="pkd-pass-input" placeholder="Nhập mật khẩu bí mật..." required autocomplete="off" class="w-full px-4 py-3.5 pl-11 pr-12 text-sm rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 shadow-inner">
+            <i data-lucide="key" class="w-5 h-5 text-slate-500 absolute left-3.5 top-3.5"></i>
+            <button type="button" id="toggle-pkd-pass" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-white transition-colors" title="Hiện/ẩn mật khẩu">
+              <i data-lucide="eye" id="toggle-pkd-pass-icon" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+          <!-- Thông báo lỗi khi nhập sai -->
+          <div id="pkd-error-alert" class="hidden p-3 rounded-xl bg-rose-900/40 border border-rose-700/60 text-rose-300 text-xs flex items-center gap-2 text-left">
+            <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+            <span>Mật khẩu không chính xác! Vui lòng kiểm tra lại.</span>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-bold text-sm shadow-lg shadow-rose-900/30 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+            <i data-lucide="unlock" class="w-4 h-4"></i>
+            <span>Mở Khóa Góc Bí Mật PKD</span>
+          </button>
+        </form>
+
+        <p class="text-xs text-slate-500 mt-4 italic">
+          💡 Gợi ý: Mật khẩu do quản trị viên hoặc chính chủ cung cấp.
+        </p>
+
+        <!-- Nút bypass PKD cho Admin -->
+        <div class="admin-only hidden mt-4">
+          <button id="admin-bypass-pkd-btn" class="w-full py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-sm shadow flex items-center justify-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>Admin: Mở Khóa Không Cần Mật Khẩu</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TRẠNG THÁI 2: ĐÃ MỞ KHÓA (HIỂN THỊ ẢNH & TIỂU SỬ) -->
+      <div id="pkd-unlocked-view" class="hidden space-y-12">
+        
+        <!-- Header điều khiển sau khi mở khóa -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-700 gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center text-xl">
+              🕶️
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-2xl font-black text-white">Góc Lưu Trữ PKD</h3>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold">Đã Mở Khóa</span>
+              </div>
+              <p class="text-xs text-slate-400">Hồ sơ cá nhân & kho ảnh độc quyền</p>
+            </div>
+          </div>
+
+          <!-- Nút Khóa lại -->
+          <div class="flex items-center gap-3">
+            <!-- Nút Sửa PKD (Admin Only) -->
+            <div class="admin-only hidden">
+              <button id="edit-pkd-btn" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold flex items-center gap-2 transition-all shadow-sm">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <span>Sửa Hồ Sơ PKD</span>
+              </button>
+            </div>
+            <button id="pkd-lock-again-btn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all">
+              <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-400"></i>
+              <span>Khóa Lại Góc Này</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PHẦN 1: TIỂU SỬ CHI TIẾT (BIOGRAPHY) -->
+        <div class="bg-slate-800/80 rounded-3xl p-6 sm:p-10 border border-slate-700 shadow-xl backdrop-blur-md">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Cột Avatar & Thông tin cơ bản -->
+            <div class="lg:col-span-4 flex flex-col items-center text-center">
+              <div class="polaroid-card w-64 max-w-full text-slate-800">
+                <div class="washi-tape washi-tape-pink"></div>
+                <img id="pkd-bio-avatar" src="" alt="PKD Avatar" class="w-full h-72 object-cover rounded shadow-inner">
+                <div class="mt-4 text-center">
+                  <h4 id="pkd-bio-name" class="font-extrabold text-lg text-slate-900">Phan Khánh Duy</h4>
+                  <p id="pkd-bio-role" class="text-xs text-rose-600 font-bold mt-0.5">Chiến Thần 12A1</p>
+                  <span id="pkd-bio-birthday" class="text-[11px] text-slate-500 font-medium block mt-1">🎂 19/09/2006</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cột Tiểu Sử, Kỷ Niệm & Thống Kê -->
+            <div class="lg:col-span-8 space-y-6">
+              
+              <div>
+                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider bg-rose-950/70 px-3 py-1 rounded-full border border-rose-800/80">
+                  Tiểu Sử Cá Nhân
+                </span>
+                <h4 id="pkd-bio-title" class="text-2xl font-bold text-white mt-2">Hồ Sơ Bí Mật • Nhân Vật Huyền Thoại 12A1</h4>
+                <p id="pkd-bio-desc" class="text-slate-300 mt-3 leading-relaxed text-sm sm:text-base font-light">
+                  Đang tải tiểu sử...
+                </p>
+              </div>
+
+              <!-- Châm ngôn sống -->
+              <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <span class="text-xs font-semibold text-rose-400 uppercase tracking-wider block">Châm Ngôn Sống</span>
+                <p id="pkd-bio-slogan" class="text-white font-serif-quote italic text-base mt-1">
+                  "Dù đi khắp bốn phương trời, tình nghĩa anh em 12A1 vẫn là số 1!"
+                </p>
+              </div>
+
+              <!-- Kỷ niệm đặc sắc -->
+              <div>
+                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Dấu Ấn Đặc Biệt Cùng 12A1</span>
+                </h5>
+                <ul id="pkd-bio-memories" class="space-y-2 text-xs sm:text-sm text-slate-300">
+                  <!-- Rendered via JS -->
+                </ul>
+              </div>
+
+              <!-- Thống số vui nhộn -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-700 text-center">
+                  <span class="text-slate-400 text-[11px] block">Chỉ số IQ</span>
+                  <span id="pkd-stat-iq" class="text-sm font-bold text-rose-400 mt-0.5 block">200+</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-700 text-center">
+                  <span class="text-slate-400 text-[11px] block">Khiếu hài hước</span>
+                  <span id="pkd-stat-humor" class="text-sm font-bold text-amber-400 mt-0.5 block">Vô cực</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-700 text-center">
+                  <span class="text-slate-400 text-[11px] block">Độ uy tín</span>
+                  <span id="pkd-stat-loyalty" class="text-sm font-bold text-emerald-400 mt-0.5 block">100%</span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-700 text-center">
+                  <span class="text-slate-400 text-[11px] block">Người ấy (Crush)</span>
+                  <span id="pkd-stat-crush" class="text-sm font-bold text-pink-400 mt-0.5 block">Bí mật 🤫</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PHẦN 2: KHO ẢNH RIÊNG CỦA PKD -->
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span class="text-xs font-bold text-rose-400 uppercase tracking-wider bg-rose-950/70 px-3 py-1 rounded-full border border-rose-800/80">
+                Kho Ảnh Độc Quyền
+              </span>
+              <h4 class="text-2xl font-bold text-white mt-2">Album Kỷ Niệm Của PKD</h4>
+              <p class="text-xs sm:text-sm text-slate-400">Những bức ảnh kỷ niệm riêng tư chỉ mở khi có mật khẩu.</p>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+              <!-- Nút Thêm Ảnh PKD qua Modal URL/File -->
+              <button id="add-pkd-photo-btn" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ Thêm Ảnh PKD</span>
+              </button>
+
+              <!-- Tải ảnh riêng từ máy vào kho PKD -->
+              <label for="pkd-photo-upload" class="cursor-pointer px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Tải Từ Máy</span>
+                <input type="file" id="pkd-photo-upload" accept="image/*" class="hidden">
+              </label>
+            </div>
+          </div>
+
+          <!-- Lưới ảnh PKD -->
+          <div id="pkd-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-slate-800">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- PHẦN 3: LỜI NHẮN THẦM KÍN DÀNH CHO PKD -->
+        <div class="p-6 sm:p-8 rounded-3xl bg-slate-800/90 border border-slate-700">
+          <h4 class="text-lg font-bold text-white flex items-center gap-2 mb-2">
+            <i data-lucide="message-square-heart" class="w-5 h-5 text-rose-400"></i>
+            <span>Gửi Lời Nhắn Riêng Cho PKD</span>
+          </h4>
+          <p class="text-xs text-slate-400 mb-4">Gửi gắm một lời chúc hoặc lời nhắn bí mật dành riêng cho PKD.</p>
+
+          <form id="pkd-message-form" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input type="text" id="pkd-msg-sender" required placeholder="Tên của bạn..." class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-rose-500">
+              <input type="text" id="pkd-msg-nickname" placeholder="Biệt danh / Vai trò trong 12A1..." class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-rose-500">
+            </div>
+            <textarea id="pkd-msg-content" required rows="3" placeholder="Viết lời nhắn gửi đến PKD..." class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-rose-500 font-handwriting text-base"></textarea>
+            <button type="submit" class="py-2.5 px-6 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow transition-all flex items-center gap-2">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Gửi Lời Nhắn</span>
+            </button>
+          </form>
+
+          <!-- Danh sách lời nhắn riêng gửi PKD -->
+          <div id="pkd-messages-list" class="mt-6 space-y-3 pt-6 border-t border-slate-700/80">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= HỘP THỜI GIAN (TIME CAPSULE) ================= -->
+  <section id="time-capsule" class="py-20 relative overflow-hidden bg-gradient-to-b from-white to-rose-50/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-6 shadow-inner border border-amber-200">
+        <i data-lucide="hourglass" class="w-8 h-8"></i>
+      </div>
+
+      <span class="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">Hẹn Ước Tương Lai</span>
+      <h2 id="capsule-title" class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Hộp Kỷ Niệm 10 Năm Sau</h2>
+      <p id="capsule-desc" class="text-slate-600 mt-3 max-w-xl mx-auto text-sm sm:text-base">
+        Hẹn gặp lại nhau vào ngày 30/06/2036 tại chính cổng trường thân quen! Lúc đó, chúng mình hãy cùng mở lại chiếc hộp ký ức này để xem ai đã thực hiện được ước mơ thời 18 tuổi.
+      </p>
+
+      <!-- Nút Sửa Hộp Thời Gian (Admin Only) -->
+      <div class="admin-only hidden mt-4">
+        <button id="edit-capsule-btn" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-400/40 text-xs font-bold transition-all shadow-md inline-flex items-center gap-2">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Sửa Hộp Thời Gian & Xem Lời Hứa (Admin)</span>
+        </button>
+      </div>
+
+      <!-- Countdown Display -->
+      <div class="grid grid-cols-4 gap-3 sm:gap-6 max-w-md mx-auto my-10">
+        <div class="p-3 sm:p-5 rounded-2xl bg-white border border-rose-100 shadow-md">
+          <span id="countdown-days" class="text-2xl sm:text-4xl font-extrabold text-rose-600">3500</span>
+          <p class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Ngày</p>
+        </div>
+        <div class="p-3 sm:p-5 rounded-2xl bg-white border border-rose-100 shadow-md">
+          <span id="countdown-hours" class="text-2xl sm:text-4xl font-extrabold text-slate-800">12</span>
+          <p class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Giờ</p>
+        </div>
+        <div class="p-3 sm:p-5 rounded-2xl bg-white border border-rose-100 shadow-md">
+          <span id="countdown-minutes" class="text-2xl sm:text-4xl font-extrabold text-slate-800">45</span>
+          <p class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Phút</p>
+        </div>
+        <div class="p-3 sm:p-5 rounded-2xl bg-white border border-rose-100 shadow-md">
+          <span id="countdown-seconds" class="text-2xl sm:text-4xl font-extrabold text-rose-500">20</span>
+          <p class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Giây</p>
+        </div>
+      </div>
+
+      <!-- Form gửi ước mơ vào hòm thư bí mật -->
+      <div class="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-lg max-w-lg mx-auto text-left relative">
+        <div class="washi-tape washi-tape-blue"></div>
+        <h4 class="font-bold text-slate-800 text-lg mb-2 flex items-center gap-2">
+          <i data-lucide="mail" class="w-5 h-5 text-rose-500"></i>
+          <span>Gửi Điều Ước Đến Bản Thân Năm 2036</span>
+        </h4>
+        <p class="text-xs text-slate-500 mb-4">Viết lời hứa hoặc mục tiêu tương lai của bạn, điều ước sẽ được niêm phong vào bộ nhớ kỷ niệm của lớp.</p>
+        
+        <form id="capsule-form" class="space-y-3">
+          <input type="text" id="capsule-sender" required placeholder="Tên của bạn..." class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          <textarea id="capsule-promise" required rows="3" placeholder="Sau 10 năm nữa, tôi nhất định sẽ..." class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-700 hover:to-amber-600 text-white font-semibold text-sm shadow transition-all flex items-center justify-center gap-2">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            <span>Niêm Phong Lời Hứa Vào Hộp Kỷ Niệm</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        
+        <div>
+          <div class="flex items-center justify-center md:justify-start gap-2 text-white font-bold text-lg mb-1">
+            <i data-lucide="graduation-cap" class="w-5 h-5 text-rose-500"></i>
+            <span>Tập Thể 12A1 • Niên Khóa 2023 - 2026</span>
+          </div>
+          <p class="text-xs text-slate-400">Một ngày là thành viên 12A1 - Mãi mãi là người một nhà.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
+          <a href="#home" class="hover:text-white transition-colors">Trang chủ</a>
+          <a href="#teacher" class="hover:text-white transition-colors">Cô Chủ Nhiệm</a>
+          <a href="#members" class="hover:text-white transition-colors">Thành Viên</a>
+          <a href="#gallery" class="hover:text-white transition-colors">Kho Ảnh</a>
+          <a href="#guestbook" class="hover:text-white transition-colors">Lưu Bút</a>
+          <a href="#pkd" class="text-rose-400 hover:text-rose-300 font-bold transition-colors">Góc PKD 🔒</a>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          Designed with ❤️ for 12A1 Youth Memories
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODAL: CHI TIẾT THÀNH VIÊN ================= -->
+  <div id="member-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 transform transition-all relative">
+      <button id="close-member-modal" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Modal Header Cover -->
+      <div class="h-32 bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 relative"></div>
+
+      <!-- Avatar & Profile Details -->
+      <div class="px-6 pb-6 pt-0 relative">
+        <div class="flex justify-between items-end -mt-16 mb-4">
+          <img id="modal-member-avatar" src="" alt="" class="w-28 h-28 object-cover rounded-2xl border-4 border-white shadow-lg">
+          <span id="modal-member-group" class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200"></span>
+        </div>
+
+        <h3 id="modal-member-name" class="text-2xl font-bold text-slate-900"></h3>
+        <p id="modal-member-nickname" class="text-sm font-semibold text-rose-600 mt-0.5"></p>
+
+        <!-- Danh hiệu vui & Vị trí -->
+        <div class="mt-4 p-3 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="award" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-semibold text-amber-800 uppercase">Danh hiệu hài hước</p>
+            <p id="modal-member-funny" class="text-xs font-bold text-slate-800"></p>
+          </div>
+        </div>
+
+        <!-- Châm ngôn thanh xuân -->
+        <div class="mt-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Châm ngôn học trò</p>
+          <p id="modal-member-quote" class="font-serif-quote italic text-slate-700 text-sm mt-1 bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
+        </div>
+
+        <!-- Ước mơ & Vị trí bàn học -->
+        <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+            <span class="text-slate-400 block font-medium">Ước mơ tương lai:</span>
+            <span id="modal-member-dream" class="font-bold text-slate-800 mt-0.5 block"></span>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+            <span class="text-slate-400 block font-medium">Vị trí chỗ ngồi:</span>
+            <span id="modal-member-seat" class="font-bold text-slate-800 mt-0.5 block"></span>
+          </div>
+        </div>
+
+        <!-- Sở thích -->
+        <div class="mt-3 text-xs text-slate-500">
+          <span class="font-semibold text-slate-700">Sở thích:</span>
+          <span id="modal-member-hobbies"></span>
+        </div>
+
+        <!-- Social Links -->
+        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+          <span class="text-xs text-slate-400">Kết nối cùng bạn:</span>
+          <div class="flex items-center gap-2">
+            <a id="modal-member-fb" href="#" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center text-xs">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </a>
+            <a id="modal-member-ig" href="#" target="_blank" class="w-8 h-8 rounded-full bg-pink-50 text-pink-600 hover:bg-pink-100 flex items-center justify-center text-xs">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THÊM LƯU BÚT MỚI ================= -->
+  <div id="note-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+      <button id="close-note-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="pen-tool" class="w-5 h-5 text-rose-500"></i>
+        <span>Viết Lưu Bút Kỷ Niệm</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-4">Gửi gắm những lời chúc ý nghĩa cho các bạn lớp 12A1 nhé!</p>
+
+      <form id="note-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Họ tên của bạn *</label>
+          <input type="text" id="note-author" required placeholder="Ví dụ: Hoàng Long, Bé My, hoặc Ẩn Danh..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Chức vụ / Vai trò</label>
+            <input type="text" id="note-role" placeholder="Ví dụ: Thành viên Tổ 2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Chủ đề cảm xúc</label>
+            <select id="note-tag" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 bg-white">
+              <option value="Thanh xuân">🌸 Thanh xuân</option>
+              <option value="Xúc động">🥺 Xúc động</option>
+              <option value="Hài hước">😂 Hài hước</option>
+              <option value="Tri ân">❤️ Tri ân thầy cô</option>
+              <option value="Thi đỗ ĐH">🎯 Thi đỗ ĐH</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Chọn màu giấy ghi nhớ</label>
+          <div class="flex items-center gap-3">
+            <label class="cursor-pointer flex items-center gap-1.5 text-xs">
+              <input type="radio" name="note-color" value="yellow" checked class="text-amber-400 focus:ring-0">
+              <span class="w-5 h-5 rounded-full bg-amber-200 border border-amber-300 inline-block"></span>
+              <span>Vàng</span>
+            </label>
+            <label class="cursor-pointer flex items-center gap-1.5 text-xs">
+              <input type="radio" name="note-color" value="rose" class="text-rose-400 focus:ring-0">
+              <span class="w-5 h-5 rounded-full bg-rose-200 border border-rose-300 inline-block"></span>
+              <span>Hồng</span>
+            </label>
+            <label class="cursor-pointer flex items-center gap-1.5 text-xs">
+              <input type="radio" name="note-color" value="blue" class="text-blue-400 focus:ring-0">
+              <span class="w-5 h-5 rounded-full bg-sky-200 border border-sky-300 inline-block"></span>
+              <span>Xanh</span>
+            </label>
+            <label class="cursor-pointer flex items-center gap-1.5 text-xs">
+              <input type="radio" name="note-color" value="emerald" class="text-emerald-400 focus:ring-0">
+              <span class="w-5 h-5 rounded-full bg-emerald-200 border border-emerald-300 inline-block"></span>
+              <span>Lục</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nội dung lưu bút *</label>
+          <textarea id="note-content" required rows="4" placeholder="Những lời muốn nói với 12A1..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 font-handwriting text-base"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Ghim Lưu Bút Lên Bảng</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= LIGHTBOX XEM ẢNH PHÓNG TO ================= -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
+    <button id="close-lightbox" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <div class="max-w-4xl max-h-[80vh] flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="" class="max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl">
+      <div class="mt-4 text-center text-white">
+        <h4 id="lightbox-title" class="font-bold text-lg"></h4>
+        <p id="lightbox-desc" class="text-sm text-slate-300 mt-1"></p>
+        <span id="lightbox-date" class="text-xs text-rose-400 mt-1 block"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ĐĂNG NHẬP (ADMIN & GUEST) ================= -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <button id="close-auth-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-3 border border-rose-200 shadow-sm">
+          <i data-lucide="shield-check" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900">Đăng Nhập Hệ Thống</h3>
+        <p class="text-xs text-slate-500 mt-1">Chọn tài khoản của bạn để chỉnh sửa nội dung hoặc ảnh</p>
+      </div>
+
+      <!-- Chọn nhanh tài khoản -->
+      <div class="grid grid-cols-2 gap-2.5 mb-5">
+        <button type="button" id="quick-login-admin" class="p-3 rounded-xl border border-rose-200 bg-rose-50/70 hover:bg-rose-100/80 text-left transition-all">
+          <div class="flex items-center gap-1.5 font-bold text-xs text-rose-700">
+            <span>👑 Admin</span>
+          </div>
+          <p class="text-[11px] text-slate-600 mt-0.5">Sửa toàn bộ web & sơ đồ</p>
+        </button>
+        <button type="button" id="quick-login-guest" class="p-3 rounded-xl border border-sky-200 bg-sky-50/70 hover:bg-sky-100/80 text-left transition-all">
+          <div class="flex items-center gap-1.5 font-bold text-xs text-sky-700">
+            <span>👥 Guest</span>
+          </div>
+          <p class="text-[11px] text-slate-600 mt-0.5">Quyền thêm & sửa ảnh</p>
+        </button>
+      </div>
+
+      <form id="auth-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên tài khoản</label>
+          <input type="text" id="auth-username" required placeholder="admin hoặc guest" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu</label>
+          <input type="password" id="auth-password" required placeholder="Nhập mật khẩu..." class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div id="auth-error-msg" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+          <span>Tên đăng nhập hoặc mật khẩu không chính xác!</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          <span>Đăng Nhập</span>
+        </button>
+
+        <button type="button" id="dismiss-auth-btn" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="x" class="w-3.5 h-3.5 text-slate-500"></i>
+          <span>Bỏ Qua & Xem Trang Trực Tiếp (Không Cần Đăng Nhập)</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SỬA THÔNG TIN CHUNG LỚP (ADMIN ONLY) ================= -->
+  <div id="edit-general-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-general-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="edit" class="w-5 h-5 text-rose-500"></i>
+        <span>Sửa Thông Tin Chung Lớp 12A1</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-5">Thay đổi nội dung trên trang mà không cần chạm vào dòng code nào!</p>
+
+      <form id="general-info-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Lớp</label>
+          <input type="text" id="edit-class-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Niên Khóa</label>
+            <input type="text" id="edit-academic-years" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tổng Số Học Sinh</label>
+            <input type="number" id="edit-total-students" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Trường Học / Ký Tên</label>
+          <input type="text" id="edit-school-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Câu Slogan Thanh Xuân</label>
+          <textarea id="edit-slogan" rows="2" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Lời Tựa Trong Khung Sổ Tay</label>
+          <textarea id="edit-main-quote" rows="3" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 font-handwriting text-base"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Lưu Thay Đổi Thông Tin Lớp</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SỬA THÔNG TIN CÔ CHỦ NHIỆM (ADMIN ONLY) ================= -->
+  <div id="edit-teacher-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-teacher-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="user-check" class="w-5 h-5 text-rose-500"></i>
+        <span>Sửa Lời Dặn Của Cô Chủ Nhiệm</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-5">Cập nhật lời chúc, ảnh và thông điệp của cô giáo</p>
+
+      <form id="teacher-info-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Họ Tên Cô Giáo</label>
+          <input type="text" id="edit-teacher-name-input" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Chức Vụ / Môn Học</label>
+            <input type="text" id="edit-teacher-title-input" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Biệt Danh Yêu Quý</label>
+            <input type="text" id="edit-teacher-nick-input" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Link Ảnh Chân Dung (URL)</label>
+          <input type="url" id="edit-teacher-avatar-input" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Bức Tâm Thư Dặn Dò</label>
+          <textarea id="edit-teacher-message-input" rows="4" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Thông Điệp Gửi Gắm</label>
+          <input type="text" id="edit-teacher-quote-input" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Lưu Thông Tin Cô Chủ Nhiệm</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THÊM / SỬA THÀNH VIÊN (ADMIN ONLY) ================= -->
+  <div id="edit-member-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-edit-member-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 id="member-modal-title" class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="user-plus" class="w-5 h-5 text-rose-500"></i>
+        <span>Thêm Thành Viên Mới Vào 12A1</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-5">Điền thông tin và hình ảnh đại diện của bạn bè</p>
+
+      <form id="member-form" class="space-y-3.5">
+        <input type="hidden" id="edit-member-id">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và Tên *</label>
+            <input type="text" id="edit-m-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Biệt Danh *</label>
+            <input type="text" id="edit-m-nickname" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tổ *</label>
+            <select id="edit-m-group" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 bg-white">
+              <option value="Tổ 1">Tổ 1</option>
+              <option value="Tổ 2">Tổ 2</option>
+              <option value="Tổ 3">Tổ 3</option>
+              <option value="Tổ 4">Tổ 4</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Vai Trò / Chức Vụ</label>
+            <input type="text" id="edit-m-role" placeholder="Thành viên, Lớp trưởng..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Link Ảnh Đại Diện (URL) *</label>
+          <input type="url" id="edit-m-avatar" required placeholder="https://..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Danh Hiệu Hài Hước ⭐</label>
+          <input type="text" id="edit-m-funny" placeholder="Thánh ngủ gật, Chuyên gia nợ quỹ..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Châm Ngôn Thanh Xuân</label>
+          <textarea id="edit-m-quote" rows="2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 font-serif-quote"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Ước Mơ Tương Lai</label>
+            <input type="text" id="edit-m-dream" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Vị Trí Chỗ Ngồi</label>
+            <input type="text" id="edit-m-seat" placeholder="Bàn 1 - Dãy 2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Lưu Thông Tin Thành Viên</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SỬA CHỖ NGỒI SƠ ĐỒ LỚP (ADMIN ONLY) ================= -->
+  <div id="edit-seat-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 relative">
+      <button id="close-seat-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="edit" class="w-5 h-5 text-amber-500"></i>
+        <span>Chỉnh Sửa Chỗ Ngồi</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-4">Thay đổi tên học sinh hoặc xóa ô vị trí này</p>
+
+      <form id="seat-edit-form" class="space-y-3">
+        <input type="hidden" id="edit-seat-row-idx">
+        <input type="hidden" id="edit-seat-desk-idx">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Học Sinh Ngồi Bàn Này *</label>
+          <input type="text" id="edit-seat-student-name" required placeholder="Nhập tên bạn ngồi đây..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Dãy / Cột</label>
+          <input type="text" id="edit-seat-col-name" placeholder="Dãy 1, Dãy 2, Cạnh Cửa Sổ..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div class="pt-2 flex items-center gap-2">
+          <button type="submit" class="flex-grow py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow transition-all flex items-center justify-center gap-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Lưu Chỗ Ngồi</span>
+          </button>
+          <button type="button" id="delete-seat-btn" class="py-2.5 px-3 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-xs transition-all flex items-center gap-1" title="Xóa ô này">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Xóa Ô</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THÊM VIDEO MỚI (ADMIN ONLY) ================= -->
+  <div id="edit-video-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+      <button id="close-video-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="video" class="w-5 h-5 text-rose-500"></i>
+        <span>Thêm Video Kỷ Niệm Mới</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-4">Nhúng video YouTube hoặc link video kỷ niệm của 12A1</p>
+
+      <form id="video-add-form" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu Đề Video *</label>
+          <input type="text" id="new-video-title" required placeholder="MV Kỷ Yếu 12A1, Lễ Bế Giảng..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Đường Dẫn Video (YouTube Embed hoặc URL) *</label>
+          <input type="url" id="new-video-url" required placeholder="https://www.youtube.com/embed/..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          <p class="text-[11px] text-slate-400 mt-1">💡 Bạn có thể dán link chia sẻ YouTube dạng: https://www.youtube.com/embed/ID</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mô Tả Video</label>
+          <textarea id="new-video-desc" rows="2" placeholder="Ghi chú về khoảnh khắc trong clip..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ngày Quay / Đăng</label>
+          <input type="text" id="new-video-date" placeholder="Tháng 5/2026" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Thêm Video Vào Bộ Sưu Tập</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THÊM / SỬA ẢNH (ADMIN & GUEST) ================= -->
+  <div id="edit-photo-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+      <button id="close-photo-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="image-plus" class="w-5 h-5 text-rose-500"></i>
+        <span>Thêm Ảnh Mới Vào Bộ Sưu Tập</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-4">Cả tài khoản Admin và Guest đều có quyền thêm ảnh tại đây!</p>
+
+      <form id="photo-add-form" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu Đề Bức Ảnh *</label>
+          <input type="text" id="new-photo-title" required placeholder="Ảnh tập thể, giờ ra chơi..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Danh Mục Ảnh *</label>
+          <select id="new-photo-cat" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 bg-white">
+            <option value="yearbook">Ảnh Kỷ Yếu</option>
+            <option value="candid">Giờ Ra Chơi & Đời Thường</option>
+            <option value="events">Hội Trại & Văn Nghệ</option>
+            <option value="fun">Ảnh Dìm Bá Đạo 😂</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Đường Dẫn Ảnh (URL) hoặc Tải Tệp</label>
+          <input type="url" id="new-photo-url" placeholder="https://..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          <div class="mt-2 text-center text-xs text-slate-400">-- hoặc --</div>
+          <input type="file" id="new-photo-file" accept="image/*" class="mt-1 w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mô Tả Ngắn</label>
+          <input type="text" id="new-photo-desc" placeholder="Những nụ cười rạng rỡ..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ngày Tháng</label>
+          <input type="text" id="new-photo-date" placeholder="Tháng 5/2026" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Lưu Bức Ảnh Này</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THÊM / SỬA MỐC KỶ NIỆM DÒNG THỜI GIAN (ADMIN ONLY) ================= -->
+  <div id="edit-timeline-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-timeline-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 id="timeline-modal-title" class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="plus-circle" class="w-5 h-5 text-rose-500"></i>
+        <span>Thêm Mốc Kỷ Niệm Mới</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-5">Ghi lại những dấu mốc quan trọng trong hành trình 3 năm của 12A1</p>
+
+      <form id="timeline-form" class="space-y-4">
+        <input type="hidden" id="edit-timeline-id">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Năm / Thời gian *</label>
+            <input type="text" id="edit-tl-year" required placeholder="Năm học 2023-2024" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Thẻ Nhãn *</label>
+            <input type="text" id="edit-tl-tag" required placeholder="Khai Giảng, Lễ hội, Thi..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu Đề Sự Kiện *</label>
+          <input type="text" id="edit-tl-title" required placeholder="Lễ Khai Giảng Niên Khóa 2023..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Link Ảnh Minh Họa (URL)</label>
+          <input type="url" id="edit-tl-image" placeholder="https://..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mô Tả Chi Tiết *</label>
+          <textarea id="edit-tl-desc" required rows="3" placeholder="Kể lại câu chuyện của ngày hôm đó..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Lưu Mốc Kỷ Niệm</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SỬA HỒ SƠ PKD (ADMIN ONLY) ================= -->
+  <div id="edit-pkd-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-700 relative max-h-[90vh] overflow-y-auto text-white">
+      <button id="close-pkd-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-300 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+        <i data-lucide="user-cog" class="w-5 h-5 text-amber-400"></i>
+        <span>Sửa Hồ Sơ Bí Mật PKD</span>
+      </h3>
+      <p class="text-xs text-slate-400 mb-5">Cập nhật tiểu sử, ảnh đại diện, thống kê và mật khẩu bảo vệ trang PKD</p>
+
+      <form id="pkd-edit-form" class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Họ Tên Đầy Đủ *</label>
+            <input type="text" id="edit-pkd-name" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Vai Trò *</label>
+            <input type="text" id="edit-pkd-role" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Ngày Sinh</label>
+            <input type="text" id="edit-pkd-birthday" placeholder="dd/mm/yyyy" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Mật Khẩu Bảo Vệ</label>
+            <input type="text" id="edit-pkd-password" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Tiêu Đề Hồ Sơ *</label>
+          <input type="text" id="edit-pkd-title" required class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Link Ảnh Đại Diện (URL)</label>
+          <input type="url" id="edit-pkd-avatar" placeholder="https://..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Châm Ngôn Sống</label>
+          <input type="text" id="edit-pkd-slogan" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Tiểu Sử Chi Tiết *</label>
+          <textarea id="edit-pkd-bio" required rows="4" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Chỉ số IQ (vui)</label>
+            <input type="text" id="edit-pkd-iq" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Khiếu Hài Hước</label>
+            <input type="text" id="edit-pkd-humor" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Độ Uy Tín</label>
+            <input type="text" id="edit-pkd-loyalty" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Crush 🤫</label>
+            <input type="text" id="edit-pkd-crush" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Kỷ Niệm Đặc Biệt (mỗi dòng một kỷ niệm)</label>
+          <textarea id="edit-pkd-memories" rows="3" placeholder="Mỗi dòng là một kỷ niệm..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Lưu Hồ Sơ PKD</span>
+        </button>
+      </form>
+    </div>
+  <!-- ================= MODAL: THÊM / SỬA ẢNH ALBUM PKD ================= -->
+  <div id="edit-pkd-photo-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-700 relative text-white">
+      <button id="close-pkd-photo-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 id="pkd-photo-modal-title" class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+        <i data-lucide="image-plus" class="w-5 h-5 text-amber-400"></i>
+        <span>Thêm Ảnh Vào Album PKD</span>
+      </h3>
+      <p class="text-xs text-slate-400 mb-4">Nhập link URL hoặc tải tệp ảnh từ thiết bị của bạn</p>
+
+      <form id="pkd-photo-form" class="space-y-3.5">
+        <input type="hidden" id="edit-pkd-photo-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Tiêu Đề Bức Ảnh *</label>
+          <input type="text" id="edit-pkd-photo-title" required placeholder="Khoảnh khắc độc quyền..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Đường Dẫn Ảnh (URL) hoặc Tải Tệp</label>
+          <input type="url" id="edit-pkd-photo-url" placeholder="https://..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+          <div class="mt-2 text-center text-xs text-slate-500">-- hoặc --</div>
+          <input type="file" id="edit-pkd-photo-file" accept="image/*" class="mt-1 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-500/20 file:text-rose-400 hover:file:bg-rose-500/30">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Mô Tả Bức Ảnh</label>
+          <input type="text" id="edit-pkd-photo-desc" placeholder="Ghi chú về bức ảnh này..." class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Ngày Tháng</label>
+          <input type="text" id="edit-pkd-photo-date" placeholder="Tháng 5/2026" class="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-800 border border-slate-600 text-white focus:outline-none focus:border-rose-500">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Lưu Bức Ảnh PKD</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SỬA HỘP THỜI GIAN + VAULT LỜI HỨA (ADMIN ONLY) ================= -->
+  <div id="edit-capsule-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-capsule-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+        <i data-lucide="hourglass" class="w-5 h-5 text-amber-500"></i>
+        <span>Sửa Hộp Thời Gian & Quản Lý Lời Hứa</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-5">Cập nhật tiêu đề, mô tả và ngày hẹn gặp; Xem & xóa các lời hứa của thành viên</p>
+
+      <!-- Phần sửa thông tin hộp -->
+      <form id="capsule-edit-form" class="space-y-4 mb-8">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu Đề Hộp Thời Gian *</label>
+          <input type="text" id="edit-cap-title" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mô Tả *</label>
+          <textarea id="edit-cap-desc" required rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ngày Hẹn Gặp (YYYY-MM-DD)</label>
+          <input type="date" id="edit-cap-date" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Lưu Thay Đổi Hộp Thời Gian</span>
+        </button>
+      </form>
+
+      <!-- Vault: danh sách lời hứa -->
+      <div class="border-t border-slate-200 pt-6">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-bold text-slate-800 flex items-center gap-2">
+            <i data-lucide="inbox" class="w-4 h-4 text-rose-500"></i>
+            <span>Kho Lời Hứa Của Các Thành Viên</span>
+          </h4>
+          <span id="promises-count" class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0 lời hứa</span>
+        </div>
+        <div id="admin-promises-list" class="space-y-3 max-h-64 overflow-y-auto pr-1">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

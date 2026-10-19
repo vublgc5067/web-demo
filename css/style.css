@@ -1,0 +1,216 @@
+/* Thiết lập toàn bộ phông chữ sang Times New Roman theo yêu cầu */
+:root {
+  --primary: #f43f5e;
+  --primary-light: #ffe4e6;
+  --secondary: #3b82f6;
+  --accent: #f59e0b;
+}
+
+*, html, body, button, input, select, textarea, p, span, div, a, h1, h2, h3, h4, h5, h6, 
+.font-sans, .font-serif, .font-handwriting, .font-serif-quote {
+  font-family: 'Times New Roman', Times, Georgia, serif !important;
+}
+
+body {
+  scroll-behavior: smooth;
+  background-color: #faf7f2; /* Giấy hoài niệm ấm áp */
+  color: #1e293b;
+  overflow-x: hidden;
+}
+
+/* Hiệu ứng băng dính Washi Tape trên ảnh Polaroid */
+.washi-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 90px;
+  height: 24px;
+  background-color: rgba(254, 243, 199, 0.85);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  border-left: 2px dashed rgba(217, 119, 6, 0.4);
+  border-right: 2px dashed rgba(217, 119, 6, 0.4);
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.washi-tape-pink {
+  background-color: rgba(255, 228, 230, 0.85);
+  border-left: 2px dashed rgba(244, 63, 94, 0.4);
+  border-right: 2px dashed rgba(244, 63, 94, 0.4);
+}
+
+.washi-tape-blue {
+  background-color: rgba(224, 242, 254, 0.85);
+  border-left: 2px dashed rgba(59, 130, 246, 0.4);
+  border-right: 2px dashed rgba(59, 130, 246, 0.4);
+}
+
+/* Thẻ ảnh Polaroid */
+.polaroid-card {
+  background: #ffffff;
+  padding: 12px 12px 20px 12px;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  border-radius: 4px;
+}
+
+.polaroid-card:hover {
+  transform: translateY(-8px) scale(1.02) rotate(1deg);
+  box-shadow: 0 20px 32px -6px rgba(0, 0, 0, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+  z-index: 20;
+}
+
+/* Giấy nhớ Sticky Note Lưu bút */
+.sticky-note {
+  position: relative;
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  transform: rotate(-1deg);
+}
+
+.sticky-note:nth-child(even) {
+  transform: rotate(1.5deg);
+}
+
+.sticky-note:nth-child(3n) {
+  transform: rotate(-2deg);
+}
+
+.sticky-note:hover {
+  transform: translateY(-6px) scale(1.03) rotate(0deg) !important;
+  box-shadow: 4px 12px 24px rgba(0, 0, 0, 0.12);
+  z-index: 15;
+}
+
+/* Ghim giấy Pin */
+.pin-tack {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  z-index: 5;
+}
+
+.pin-tack::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  top: 3px;
+  left: 4px;
+}
+
+/* Canvas hiệu ứng hoa anh đào rơi */
+#sakura-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* Audio Visualizer Waves */
+.sound-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+
+.sound-bar {
+  width: 3px;
+  background-color: #f43f5e;
+  border-radius: 3px;
+  animation: bounce 0.8s ease-in-out infinite alternate;
+}
+
+.sound-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.sound-bar:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+.sound-bar:nth-child(3) { height: 9px; animation-delay: 0.4s; }
+.sound-bar:nth-child(4) { height: 16px; animation-delay: 0.15s; }
+.sound-bar:nth-child(5) { height: 8px; animation-delay: 0.3s; }
+
+.paused .sound-bar {
+  animation-play-state: paused;
+  height: 4px !important;
+}
+
+@keyframes bounce {
+  0% { height: 3px; }
+  100% { height: 16px; }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Nền họa tiết vở ô ly nhẹ */
+.bg-notebook {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(#f1f5f9 1px, transparent 1px),
+    linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Bàn học trong sơ đồ lớp */
+.classroom-desk {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.classroom-desk:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px -2px rgba(244, 63, 94, 0.2);
+}
+
+/* Gradient văn bản */
+.text-gradient-rose {
+  background: linear-gradient(135deg, #e11d48 0%, #f43f5e 50%, #fb7185 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Shake animation khi nhập sai mật khẩu */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
